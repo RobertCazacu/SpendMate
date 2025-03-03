@@ -7,7 +7,6 @@ import android.content.Context
 import android.os.Build
 import androidx.core.app.NotificationCompat
 
-
 class NotificationHelper(private val context: Context) {
     private val channelId = "default_channel"
 

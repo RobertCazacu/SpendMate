@@ -2,20 +2,27 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/editTextAmount"
+    <TextView
+        android:id="@+id/transactionTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Introdu suma"
-        android:inputType="numberDecimal" />
+        android:text="Motiv pentru tranzacție"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/inputReason"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Introdu motivul"
+        android:inputType="text" />
 
     <Button
-        android:id="@+id/buttonSubmit"
-        android:layout_width="wrap_content"
+        android:id="@+id/btnConfirm"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Trimite suma"
-        android:layout_marginTop="16dp" />
+        android:text="Confirmă" />
 </LinearLayout>

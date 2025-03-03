@@ -3,9 +3,11 @@ package com.example.readwhritenotification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -17,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.example.readwhritenotification.ui.theme.ReadWhriteNotificationTheme
@@ -25,16 +28,19 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Verificăm dacă permisiunea pentru notificări a fost deja acordată
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-            // Cerem permisiunea pentru notificări (Android 13+)
-            val requestPermissionLauncher =
-                registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
-                    if (!isGranted) {
-                        Toast.makeText(this, "Permisiunea pentru notificări a fost refuzată", Toast.LENGTH_SHORT).show()
-                    }
-                }
-            requestPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
+        // Verificăm dacă serviciul de notificări este activat
+        if (!isNotificationListenerEnabled(this)) {
+            // Trimitem utilizatorul la setările telefonului pentru a activa permisiunea
+            val intent = Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS)
+            startActivity(intent)
+        }
+
+        // Cerem permisiunea pentru notificări (Android 13+)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS)
+                != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.POST_NOTIFICATIONS), 1001)
+            }
         }
 
         setContent {
@@ -54,10 +60,16 @@ class MainActivity : ComponentActivity() {
                             Spacer(modifier = Modifier.height(16.dp))
 
                             Button(onClick = {
-                                if (ActivityCompat.checkSelfPermission(this@MainActivity, android.Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
-                                    sendTestNotification(this@MainActivity)
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { // Android 13+
+                                    if (ContextCompat.checkSelfPermission(this@MainActivity, android.Manifest.permission.POST_NOTIFICATIONS)
+                                        != PackageManager.PERMISSION_GRANTED) {
+                                        ActivityCompat.requestPermissions(this@MainActivity,
+                                            arrayOf(android.Manifest.permission.POST_NOTIFICATIONS), 1001)
+                                    } else {
+                                        sendNotification()
+                                    }
                                 } else {
-                                    Toast.makeText(this@MainActivity, "Permisiunea pentru notificări nu este acordată", Toast.LENGTH_SHORT).show()
+                                    sendNotification()
                                 }
                             }) {
                                 Text("Trimite Notificare")
@@ -69,8 +81,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    // Funcție pentru trimiterea unei notificări de test
-    private fun sendTestNotification(context: Context) {
+    private fun sendNotification() {
         val channelId = "test_channel"
 
         // Creăm canalul de notificări pentru Android 8+ (Oreo)
@@ -82,27 +93,33 @@ class MainActivity : ComponentActivity() {
                 description = descriptionText
             }
             val notificationManager: NotificationManager =
-                context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)
         }
 
         // Construim notificarea
-        val notification = NotificationCompat.Builder(context, channelId)
+        val notification = NotificationCompat.Builder(this, channelId)
             .setSmallIcon(R.drawable.ic_launcher_background)
             .setContentTitle("eMAG")
-            .setContentText("Andrei și-a cumpărat o păpușă gonflabilă")
+            .setContentText("Andrei si-a cumparat o papusa gonflabila")
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .build()
 
-        // Verificăm dacă avem permisiunea de notificare
-        if (ActivityCompat.checkSelfPermission(context, android.Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
-            // Avem permisiunea, putem trimite notificarea
-            with(NotificationManagerCompat.from(context)) {
-                notify(1, notification)
-            }
-        } else {
-            // Nu avem permisiunea, informăm utilizatorul
-            Toast.makeText(context, "Permisiunea pentru notificări nu este acordată", Toast.LENGTH_SHORT).show()
+        // Trimitem notificarea
+        with(NotificationManagerCompat.from(this)) {
+            notify(1001, notification)
         }
+    }
+
+    // Funția de verificare a permisiunii de notificare
+    fun isNotificationListenerEnabled(context: Context): Boolean {
+        val packageName = context.packageName
+        val enabledListeners = Settings.Secure.getString(
+            context.contentResolver,
+            "enabled_notification_listeners"
+        )
+        return enabledListeners?.let {
+            it.split(":").any { componentName -> componentName.contains(packageName) }
+        } ?: false
     }
 }

@@ -1,48 +1,37 @@
 package com.example.readwhritenotification
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
+import android.app.*
 import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
-import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.core.app.ActivityCompat
-import android.content.pm.PackageManager
 
 class NotificationListener : NotificationListenerService() {
     override fun onNotificationPosted(sbn: StatusBarNotification?) {
         if (sbn != null) {
             val packageName = sbn.packageName
             val extras = sbn.notification.extras
-            val title = extras.getString("android.title")
-            val text = extras.getCharSequence("android.text")?.toString()
+            val title = extras.getString("android.title") ?: "Tranzacție Necunoscută"
+            val text = extras.getCharSequence("android.text")?.toString() ?: ""
 
-            // Verificăm dacă notificarea provine de la aplicația "TestNotify"
+            // Verificăm dacă notificarea provine de la aplicația dorită
             if (packageName == "com.example.testnotify") {
-                sendNotificationFromMyApp(title, text)
+                sendCustomNotification(title, text)
             }
         }
     }
 
-    private fun sendNotificationFromMyApp(title: String?, text: String?) {
-        val channelId = "my_app_channel"
-
-        // Verificăm permisiunea de a trimite notificări
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(this, "Permisiunea pentru notificări nu este acordată", Toast.LENGTH_SHORT).show()
-            return
-        }
+    private fun sendCustomNotification(title: String, text: String) {
+        val channelId = "transaction_channel"
 
         // Creăm canalul de notificări pentru Android 8+ (Oreo)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = "My App Channel"
-            val descriptionText = "Canal pentru notificările trimise de aplicația mea"
-            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val name = "Tranzacții"
+            val descriptionText = "Notificări pentru introducerea motivului tranzacției"
+            val importance = NotificationManager.IMPORTANCE_HIGH
             val channel = NotificationChannel(channelId, name, importance).apply {
                 description = descriptionText
             }
@@ -51,9 +40,12 @@ class NotificationListener : NotificationListenerService() {
             notificationManager.createNotificationChannel(channel)
         }
 
-        // Creăm un PendingIntent pentru a deschide InputDialogActivity
-        val intent = Intent(this, InputDialogActivity::class.java)
-        intent.putExtra("title", title)
+        // Creăm un PendingIntent care va deschide activitatea de introducere a motivului
+        val intent = Intent(this, InputDialogActivity::class.java).apply {
+            putExtra("transaction_title", title)
+            putExtra("transaction_text", text)
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        }
 
         val pendingIntent = PendingIntent.getActivity(
             this, 0, intent,
@@ -62,19 +54,17 @@ class NotificationListener : NotificationListenerService() {
 
         // Construim notificarea
         val notification = NotificationCompat.Builder(this, channelId)
-            .setSmallIcon(R.drawable.ic_launcher_background)
-            .setContentTitle("Notificare de la aplicația mea")
-            .setContentText("Adăugați suma cheltuită pentru: $title")
-            .setContentIntent(pendingIntent) // Setăm PendingIntent pentru click
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setContentTitle("Confirmă tranzacția")
+            .setContentText("Introdu motivul pentru: $title")
+            .setContentIntent(pendingIntent)
+            .setAutoCancel(true)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
             .build()
 
         // Trimitem notificarea
         with(NotificationManagerCompat.from(this)) {
-            notify(1, notification)
+            notify(1001, notification)
         }
-
-        // Afișăm un mesaj Toast pentru debugging
-        Toast.makeText(this, "Notificare trimisă de aplicația mea", Toast.LENGTH_SHORT).show()
     }
 }
