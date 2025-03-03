@@ -2,27 +2,54 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:padding="16dp"
-    android:orientation="vertical">
+    android:background="@color/background_color">
 
     <TextView
-        android:id="@+id/transactionTitle"
-        android:layout_width="match_parent"
+        android:id="@+id/transaction_details"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Motiv pentru tranzacție"
+        android:text="Detalii Tranzacție"
         android:textSize="18sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:textColor="@color/primary_text_color"
+        android:layout_marginBottom="16dp"/>
 
     <EditText
-        android:id="@+id/inputReason"
+        android:id="@+id/editTextAmount"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Introdu motivul"
-        android:inputType="text" />
+        android:layout_height="48dp"
+        android:hint="Introduceți suma"
+        android:inputType="numberDecimal"
+        android:padding="10dp"
+        android:background="@drawable/edit_text_background"
+        android:layout_marginBottom="16dp"/>
+
+    <EditText
+        android:id="@+id/editTextLocation"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="Introduceți locația"
+        android:padding="10dp"
+        android:background="@drawable/edit_text_background"
+        android:layout_marginBottom="16dp"/>
+
+    <EditText
+        android:id="@+id/editTextReason"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="Introduceți motivul"
+        android:padding="10dp"
+        android:background="@drawable/edit_text_background"
+        android:layout_marginBottom="16dp"/>
 
     <Button
-        android:id="@+id/btnConfirm"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Confirmă" />
+        android:id="@+id/buttonSubmit"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:text="Trimite"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@color/button_color"
+        android:textColor="@color/primary_text_color"/>
 </LinearLayout>

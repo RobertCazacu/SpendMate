@@ -57,4 +57,14 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    // Alte dependențe existente...
+
+    // Google Play Services
+    implementation("com.google.android.gms:play-services-location:21.0.1")
+
+    // OkHttp pentru cereri HTTP
+    implementation("com.squareup.okhttp3:okhttp:5.0.0-alpha.2")
+
+    // JSON parsing
+    implementation("org.json:json:20200518")
 }

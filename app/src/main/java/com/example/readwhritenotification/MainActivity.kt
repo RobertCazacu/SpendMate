@@ -23,8 +23,17 @@ import androidx.core.content.ContextCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.example.readwhritenotification.ui.theme.ReadWhriteNotificationTheme
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import android.location.Location
+import okhttp3.*
+import org.json.JSONObject
+import java.io.IOException
 
 class MainActivity : ComponentActivity() {
+
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -41,6 +50,17 @@ class MainActivity : ComponentActivity() {
                 != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.POST_NOTIFICATIONS), 1001)
             }
+        }
+
+        // Inițializează clientul de locație
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+
+        // Verifică permisiunile de locație
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+            ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION), 1002)
+        } else {
+            getLocation()
         }
 
         setContent {
@@ -112,7 +132,7 @@ class MainActivity : ComponentActivity() {
     }
 
     // Funția de verificare a permisiunii de notificare
-    fun isNotificationListenerEnabled(context: Context): Boolean {
+    private fun isNotificationListenerEnabled(context: Context): Boolean {
         val packageName = context.packageName
         val enabledListeners = Settings.Secure.getString(
             context.contentResolver,
@@ -121,5 +141,51 @@ class MainActivity : ComponentActivity() {
         return enabledListeners?.let {
             it.split(":").any { componentName -> componentName.contains(packageName) }
         } ?: false
+    }
+
+    private fun getLocation() {
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
+            ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            fusedLocationClient.lastLocation
+                .addOnSuccessListener { location: Location? ->
+                    location?.let {
+                        determineStore(it.latitude, it.longitude)
+                    }
+                }
+        }
+    }
+
+    private fun determineStore(latitude: Double, longitude: Double) {
+        val apiKey = "AIzaSyCspsOAgDzODGtv4CHodUSJyIM_7iX3Rhg"
+        val url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=$latitude,$longitude&radius=50&type=supermarket&key=$apiKey"
+
+        val request = Request.Builder().url(url).build()
+        val client = OkHttpClient()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onResponse(call: Call, response: Response) {
+                response.body?.let { responseBody ->
+                    val jsonResponse = JSONObject(responseBody.string())
+                    val results = jsonResponse.getJSONArray("results")
+
+                    for (i in 0 until results.length()) {
+                        val place = results.getJSONObject(i)
+                        val placeName = place.getString("name")
+
+                        if (placeName.contains("Profi") || placeName.contains("Mega Image")) {
+                            runOnUiThread {
+                                // Afișează sau procesează informația
+                                Toast.makeText(applicationContext, "Ești în $placeName", Toast.LENGTH_SHORT).show()
+                            }
+                            break
+                        }
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call, e: IOException) {
+                e.printStackTrace()
+            }
+        })
     }
 }
