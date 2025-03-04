@@ -52,4 +52,22 @@
         android:layout_marginTop="16dp"
         android:backgroundTint="@color/button_color"
         android:textColor="@color/primary_text_color"/>
+
+    <Button
+        android:id="@+id/historyButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="History"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:backgroundTint="@color/teal_200"
+        android:layout_marginTop="16dp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/transactionRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/historyButton"
+        android:padding="16dp" />
+
 </LinearLayout>
