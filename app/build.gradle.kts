@@ -46,7 +46,6 @@ android {
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -75,4 +74,14 @@ dependencies {
 
     // JSON parsing
     implementation("org.json:json:20200518")
+
+    //...
+    implementation("com.squareup.okhttp3:logging-interceptor:4.10.0") // sau versiunea care se potrivește cu versiunea OkHttp
+
+    //Dependenta principala pentru Retrofit2
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+
+    //Convertor care permite conversia JSON-ului primit în obiecte Kotlin
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+
 }

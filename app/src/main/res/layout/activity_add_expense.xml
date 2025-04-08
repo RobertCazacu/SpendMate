@@ -18,6 +18,13 @@
         android:hint="Suma"
         android:inputType="numberDecimal" />
 
+    <EditText
+        android:id="@+id/editTextLocation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Locatia"/>
+
+
     <Button
         android:id="@+id/btnAdd"
         android:layout_width="match_parent"
@@ -27,4 +34,13 @@
         android:textColor="@android:color/white"
         android:padding="12dp"
         android:textSize="16sp"/>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone" />
+
 </LinearLayout>
+

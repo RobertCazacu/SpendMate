@@ -1,6 +1,4 @@
 package com.example.readwhritenotification
-
-import Transaction
 import TransactionAdapter
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity

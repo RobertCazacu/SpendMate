@@ -1,6 +1,5 @@
 package com.example.readwhritenotification
 
-import Transaction
 import TransactionAdapter
 import android.content.Intent
 import android.os.Bundle
@@ -16,6 +15,9 @@ import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.Executors
+
+
+
 
 class MainActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
@@ -70,17 +72,45 @@ class MainActivity : AppCompatActivity() {
                     val url = URL("https://api.notion.com/v1/pages")
                     val connection = url.openConnection() as HttpURLConnection
                     connection.requestMethod = "POST"
-                    connection.setRequestProperty("Authorization", "Bearer YOUR_NOTION_TOKEN")
+                    connection.setRequestProperty(
+                        "Authorization",
+                        "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"
+                    )
                     connection.setRequestProperty("Content-Type", "application/json")
-                    connection.setRequestProperty("Notion-Version", "2022-06-28")
+                    connection.setRequestProperty("Notion-Version", "2022-02-22")
                     connection.doOutput = true
 
                     val json = JSONObject().apply {
-                        put("parent", JSONObject().put("database_id", "YOUR_DATABASE_ID"))
+                        put(
+                            "parent",
+                            JSONObject().put("database_id", "13ba266c8e618044b7bdee3b3f7f93df")
+                        )
                         put("properties", JSONObject().apply {
-                            put("Name", JSONObject().put("title", JSONArray().put(JSONObject().put("text", JSONObject().put("content", transaction.name)))))
+                            put(
+                                "Name",
+                                JSONObject().put(
+                                    "title",
+                                    JSONArray().put(
+                                        JSONObject().put(
+                                            "text",
+                                            JSONObject().put("content", transaction.name)
+                                        )
+                                    )
+                                )
+                            )
                             put("Amount", JSONObject().put("number", transaction.amount))
-                            put("Date", JSONObject().put("date", JSONObject().put("start", SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(transaction.date))))
+                            put(
+                                "Date",
+                                JSONObject().put(
+                                    "date",
+                                    JSONObject().put(
+                                        "start",
+                                        SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(
+                                            transaction.date
+                                        )
+                                    )
+                                )
+                            )
                         })
                     }
 
@@ -90,7 +120,8 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     val responseCode = connection.responseCode
-                    val responseMessage = connection.inputStream.bufferedReader().use(BufferedReader::readText)
+                    val responseMessage =
+                        connection.inputStream.bufferedReader().use(BufferedReader::readText)
 
                     if (responseCode == HttpURLConnection.HTTP_OK || responseCode == HttpURLConnection.HTTP_CREATED) {
                         println("✅ Transaction sent successfully!")
@@ -102,6 +133,20 @@ class MainActivity : AppCompatActivity() {
                     connection.disconnect()
                 } catch (e: Exception) {
                     e.printStackTrace()
+                }
+                fun refreshTransactions() {
+                    val notionRepository = NotionRepository()
+                    notionRepository.getRecentTransactions { transactions, error ->
+                        runOnUiThread {
+                            if (transactions != null) {
+                                transactionList.clear()
+                                transactionList.addAll(transactions)
+                                adapter.notifyDataSetChanged()
+                            } else {
+                                // Gestionează eroarea
+                            }
+                        }
+                    }
                 }
             }
         }

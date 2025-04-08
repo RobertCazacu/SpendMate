@@ -1,9 +1,11 @@
-import java.sql.Date
+package com.example.readwhritenotification
+
+import java.util.Date
 
 data class Transaction(
-    val id: Int,
+    val id: String = "",
     val name: String,
     val amount: Double,
-    val date: Date,
-    val description: String
+    val date: Date = Date(),
+    val category: String? = null
 )
