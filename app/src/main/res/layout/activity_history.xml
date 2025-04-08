@@ -12,7 +12,7 @@
         android:id="@+id/tvTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="💰 Istoricul Cheltuielilor"
+        android:text="💰Istoricul Cheltuielilor"
         android:textSize="22sp"
         android:textStyle="bold"
         android:gravity="center"
@@ -36,12 +36,12 @@
         android:background="@android:color/white"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 
-    <!-- Buton de Înapoi, acum cu margini rotunjite -->
+    <!-- Buton de Înapoi -->
     <Button
         android:id="@+id/btnBack"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="⬅ Înapoi"
+        android:text="Înapoi"
         android:background="@drawable/rounded_button"
         android:textColor="@android:color/white"
         android:textStyle="bold"

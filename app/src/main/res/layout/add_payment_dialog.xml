@@ -1,22 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="30dp">
+    android:padding="16dp">
 
     <EditText
-        android:id="@+id/etName"
+        android:id="@+id/editTextName"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:hint="Nume plată"
-        android:inputType="text" />
+        android:layout_height="wrap_content"
+        android:hint="Nume cheltuială" />
 
     <EditText
-        android:id="@+id/etAmount"
+        android:id="@+id/editTextAmount"
         android:layout_width="match_parent"
-        android:layout_height="78dp"
-        android:hint="Sumă"
+        android:layout_height="wrap_content"
+        android:hint="Suma"
         android:inputType="numberDecimal" />
 
+    <EditText
+        android:id="@+id/editTextLocation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Locatia"/>
+
+
+    <Button
+        android:id="@+id/btnAdd"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Adaugă"
+        android:backgroundTint="@color/purple_500"
+        android:textColor="@android:color/white"
+        android:padding="12dp"
+        android:textSize="16sp"/>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone" />
+
 </LinearLayout>
+
