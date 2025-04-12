@@ -11,7 +11,9 @@ data class NotionProperties(
     val Name: TitleProperty,
     val Amount: NumberProperty,
     val Date: DateProperty,
-    val Description: TextProperty
+    val Description: TextProperty,
+    val Location: TextProperty,
+
 )
 
 data class TitleProperty(val title: List<TextContent>)

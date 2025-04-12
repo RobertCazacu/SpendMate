@@ -9,7 +9,7 @@ interface NotionApiService {
     @Headers(
         "Authorization: Bearer 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",
         "Content-Type: application/json",
-        "Notion-Version: 2022-06-28"  // O versiune mai recentă a API-ului
+        "Notion-Version: 2022-06-28"
     )
     @POST("pages")
     fun createTransaction(@Body transaction: NotionTransactionRequest): Call<NotionResponse>

@@ -23,7 +23,7 @@ class HistoryActivity : AppCompatActivity() {
     }
 
     private fun getTransactionHistory(): List<Transaction> {
-        // TODO: Ia toate tranzacțiile din baza de date
+        //TODO: Ia toate tranzacțiile din baza de date
         return listOf()
     }
 }

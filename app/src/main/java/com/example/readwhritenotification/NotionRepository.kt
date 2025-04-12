@@ -13,9 +13,10 @@ class NotionRepository {
     private val TAG = "NotionRepository"
     private val DATABASE_ID = "13ba266c8e618044b7bdee3b3f7f93df"
 
-    fun addTransaction(name: String, amount: Double, callback: (Boolean, String?) -> Unit) {
+    fun addTransaction(name: String, amount: Double, location: String, callback: (Boolean, String?) -> Unit) {
         val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         val today = Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant())
+
 
         val transactionRequest = NotionTransactionRequest(
             parent = Parent(database_id = DATABASE_ID),
@@ -23,10 +24,10 @@ class NotionRepository {
                 Name = TitleProperty(title = listOf(TextContent(Text(name)))),
                 Amount = NumberProperty(number = amount),
                 Date = DateProperty(date = DateContent(start = dateFormat.format(today))),
-                Description = TextProperty(rich_text = listOf(TextContent(Text("Tranzacție adăugată din SpendMate"))))
+                Description = TextProperty(rich_text = listOf(TextContent(Text("Tranzacție adăugată din SpendMate")))),
+                Location = TextProperty(rich_text = listOf(TextContent(Text(location))))
             )
         )
-
         RetrofitClient.instance.createTransaction(transactionRequest)
             .enqueue(object : Callback<NotionResponse> {
                 override fun onResponse(call: Call<NotionResponse>, response: Response<NotionResponse>) {

@@ -3,29 +3,29 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background_color"
     android:orientation="vertical"
-    android:padding="16dp"
-    android:background="@color/background_color">
+    android:padding="16dp">
 
     <TextView
         android:id="@+id/transaction_details"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
         android:text="Detalii Tranzacție"
-        android:textSize="18sp"
-        android:textStyle="bold"
         android:textColor="@color/primary_text_color"
-        android:layout_marginBottom="16dp"/>
+        android:textSize="18sp"
+        android:textStyle="bold" />
 
     <EditText
         android:id="@+id/editTextAmount"
         android:layout_width="match_parent"
         android:layout_height="48dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/edit_text_background"
         android:hint="Introduceți suma"
         android:inputType="numberDecimal"
-        android:padding="10dp"
-        android:background="@drawable/edit_text_background"
-        android:layout_marginBottom="16dp"/>
+        android:padding="10dp" />
 
     <EditText
         android:id="@+id/editTextLocation"
@@ -43,6 +43,7 @@
         android:layout_height="48dp"
         android:layout_marginBottom="16dp"
         android:background="@drawable/edit_text_background"
+        android:baselineAligned="false"
         android:hint="Introduceți motivul"
         android:padding="10dp" />
 
@@ -59,11 +60,11 @@
         android:id="@+id/historyButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="History"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
         android:backgroundTint="@color/teal_200"
-        android:layout_marginTop="16dp" />
+        android:text="History" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/transactionRecyclerView"
